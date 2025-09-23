@@ -1,0 +1,31 @@
+# Configuration file for dotfiles management
+configs:
+  tmux:
+    source: .tmux.conf
+    target: ~/.tmux.conf
+
+  nvim:
+    source: nvim
+    target: ~/.config/nvim
+
+  wezterm:
+    source: .wezterm.lua
+    target: ~/.wezterm.lua
+
+  # Future configs (examples)
+  # zsh:
+  #   source: .zshrc
+  #   target: ~/.zshrc
+  # git:
+  #   source: .gitconfig
+  #   target: ~/.gitconfig
+  # wezterm:
+  #   source: wezterm
+  #   target: ~/.config/wezterm
+
+# Optional post-install commands for specific configs
+post_install:
+  tmux:
+    - "tmux source-file ~/.tmux.conf 2>/dev/null || echo 'Tmux not running, config will apply on next start'"
+  nvim:
+    - "echo 'Neovim config updated. Restart nvim to apply changes.'"
