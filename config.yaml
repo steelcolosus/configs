@@ -4,13 +4,13 @@ configs:
     source: .tmux.conf
     target: ~/.tmux.conf
 
-  nvim:
-    source: nvim
-    target: ~/.config/nvim
-
   wezterm:
     source: .wezterm.lua
     target: ~/.wezterm.lua
+
+  # nvim:
+  #   source: nvim
+  #   target: ~/.config/nvim
 
   # Future configs (examples)
   # zsh:
