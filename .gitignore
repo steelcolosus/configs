@@ -1,0 +1,23 @@
+# Operating System
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+.TemporaryItems
+
+# Editors
+*.swp
+*.swo
+*~
+*.bkp
+.idea/
+.vscode/
+.netrwhist
+
+# Shell
+.bash_history
+.zsh_history
+
+# Misc
+*.log
+tmp/

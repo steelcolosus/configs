@@ -1,7 +1,11 @@
 # Variables
+SHELL := /bin/bash
 CONFIG_DIR := $(shell pwd)
 CONFIG_FILE := config.yaml
 BACKUP_DIR := $(HOME)/.config-backup
+YQ_VERSION := v4.40.5
+YQ_BINARY := yq_linux_amd64
+LOCAL_BIN := $(HOME)/.local/bin
 
 .PHONY: all install uninstall list backup help install-yq
 
@@ -15,74 +19,33 @@ install-yq:
 		if command -v brew >/dev/null 2>&1; then \
 			brew install yq; \
 		elif [[ "$$OSTYPE" == "linux-gnu"* ]]; then \
-			echo "Please install yq manually: https://github.com/mikefarah/yq#install"; \
-			exit 1; \
+			echo "Detected Linux. Attempting to install yq to $(LOCAL_BIN)..."; \
+			mkdir -p $(LOCAL_BIN); \
+			if command -v wget >/dev/null 2>&1; then \
+				wget -qO $(LOCAL_BIN)/yq https://github.com/mikefarah/yq/releases/download/$(YQ_VERSION)/$(YQ_BINARY); \
+			elif command -v curl >/dev/null 2>&1; then \
+				curl -L -o $(LOCAL_BIN)/yq https://github.com/mikefarah/yq/releases/download/$(YQ_VERSION)/$(YQ_BINARY); \
+			else \
+				echo "Error: Neither wget nor curl found. Please install yq manually."; \
+				exit 1; \
+			fi; \
+			chmod +x $(LOCAL_BIN)/yq; \
+			echo "yq installed to $(LOCAL_BIN)/yq"; \
+			echo "Please ensure $(LOCAL_BIN) is in your PATH."; \
+			export PATH="$(LOCAL_BIN):$$PATH"; \
 		else \
-			echo "Please install yq manually: https://github.com/mikefarah/yq#install"; \
+			echo "Unsupported OS. Please install yq manually: https://github.com/mikefarah/yq#install"; \
 			exit 1; \
 		fi; \
 	fi
 
 # Install all configurations
-install: install-yq backup
-	@echo "Installing configurations from $(CONFIG_FILE)..."
-	@yq eval '.configs | to_entries | .[] | .key + ":" + .value.source + ":" + .value.target' $(CONFIG_FILE) | while IFS=: read -r config_name source_path target_path; do \
-		expanded_target=$$(eval echo $$target_path); \
-		full_source_path="$(CONFIG_DIR)/$$source_path"; \
-		if [ -e "$$full_source_path" ]; then \
-			target_dir=$$(dirname "$$expanded_target"); \
-			mkdir -p "$$target_dir"; \
-			ln -sfn "$$full_source_path" "$$expanded_target"; \
-			echo "✓ Linked $$config_name ($$source_path) -> $$expanded_target"; \
-		else \
-			echo "✗ Source not found: $$full_source_path"; \
-		fi; \
-	done
-	@echo "Running post-install commands..."
-	@yq eval '.post_install | to_entries | .[] | .key + ":" + (.value | join(";"))' $(CONFIG_FILE) 2>/dev/null | while IFS=: read -r config commands; do \
-		if [ -n "$$commands" ]; then \
-			echo "Running post-install for $$config..."; \
-			echo "$$commands" | tr ';' '\n' | while read -r cmd; do \
-				eval "$$cmd"; \
-			done; \
-		fi; \
-	done || true
+install: install-yq
+	@./scripts/install.sh
 
 # Install specific configuration
 install-%: install-yq
-	@echo "Installing configuration: $*"
-	@source_path=$$(yq eval '.configs["$*"].source' $(CONFIG_FILE)); \
-	target_path=$$(yq eval '.configs["$*"].target' $(CONFIG_FILE)); \
-	if [ "$$source_path" = "null" ] || [ "$$target_path" = "null" ]; then \
-		echo "Configuration '$*' not found in $(CONFIG_FILE)"; \
-		echo "Available configurations:"; \
-		yq eval '.configs | keys | .[]' $(CONFIG_FILE) | sed 's/^/  /'; \
-		exit 1; \
-	fi; \
-	expanded_target=$$(eval echo $$target_path); \
-	full_source_path="$(CONFIG_DIR)/$$source_path"; \
-	if [ -e "$$full_source_path" ]; then \
-		target_dir=$$(dirname "$$expanded_target"); \
-		mkdir -p "$$target_dir"; \
-		if [ -e "$$expanded_target" ] && [ ! -L "$$expanded_target" ]; then \
-			backup_path="$(BACKUP_DIR)/$*-$$(date +%Y%m%d-%H%M%S)"; \
-			mkdir -p "$$(dirname "$$backup_path")"; \
-			mv "$$expanded_target" "$$backup_path"; \
-			echo "Backed up existing file to $$backup_path"; \
-		fi; \
-		ln -sfn "$$full_source_path" "$$expanded_target"; \
-		echo "✓ Linked $* ($$source_path) -> $$expanded_target"; \
-		commands=$$(yq eval '.post_install["$*"] // []' $(CONFIG_FILE) | yq eval '. | join(";")' -); \
-		if [ "$$commands" != "null" ] && [ -n "$$commands" ]; then \
-			echo "Running post-install commands for $*..."; \
-			echo "$$commands" | tr ';' '\n' | while read -r cmd; do \
-				eval "$$cmd"; \
-			done; \
-		fi; \
-	else \
-		echo "✗ Source not found: $$full_source_path"; \
-		exit 1; \
-	fi
+	@./scripts/install.sh $*
 
 # Backup existing configurations
 backup: install-yq

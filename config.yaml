@@ -8,9 +8,17 @@ configs:
     source: .wezterm.lua
     target: ~/.wezterm.lua
 
-  # nvim:
-  #   source: nvim
-  #   target: ~/.config/nvim
+  zsh:
+    source: .zshrc
+    target: ~/.zshrc
+
+  nvim:
+    source: nvim
+    target: ~/.config/nvim
+
+  ghostty:
+    source: ghostty
+    target: ~/.config/ghostty
 
   # Future configs (examples)
   # zsh:
@@ -29,3 +37,5 @@ post_install:
     - "tmux source-file ~/.tmux.conf 2>/dev/null || echo 'Tmux not running, config will apply on next start'"
   nvim:
     - "echo 'Neovim config updated. Restart nvim to apply changes.'"
+  zsh:
+    - "source ~/.zshrc"
