@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/eduardo/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -84,7 +84,7 @@ plugins=(
 	zsh-syntax-highlighting
 )
 
-autoload -U compinit && compinit
+#autoload -U compinit && compinit
 #iSPACESHIP_PROMPT_ORDER=(
 #  dir           # Current directory section
 #  git           # Git section (git_branch + git_status)
@@ -100,11 +100,11 @@ autoload -U compinit && compinit
 #  char          # Prompt character
 #)
 source $ZSH/oh-my-zsh.sh
-source ~/.profile
+#source ~/.profile
 
 # User configuration
 
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+#export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -161,45 +161,21 @@ export PIPENV_VENV_IN_PROJECT=1
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
-export PATH="/opt/homebrew/bin:$PATH"
+#export PATH="/opt/homebrew/bin:$PATH"
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:$GOPATH/bin
 
 # pnpm
-export PNPM_HOME="/Users/eduardo/Library/pnpm"
-export PATH="$PNPM_HOME:$PATH"
+#export PNPM_HOME="/Users/eduardo/Library/pnpm"
+#export PATH="$PNPM_HOME:$PATH"
 # pnpm end
 
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"
 alias cd="z"
 
-# add latex path
-LATEX_PATH="/Library/TeX/texbin"
-export PATH="$LATEX_PATH:$PATH"
-
-. "$HOME/.local/bin/env"
-
-if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
-    alias nvim=nvr -cc split --remote-wait +'set bufhidden=wipe'
-fi
-
-if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
-    export VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
-    export EDITOR="nvr -cc split --remote-wait +'set bufhidden=wipe'"
-else
-    export VISUAL="nvim"
-    export EDITOR="nvim"
-fi
-
-
-#vim alias
-
-# Added by Antigravity
-export PATH="/Users/eduardo/.antigravity/antigravity/bin:$PATH"
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
