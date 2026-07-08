@@ -6,6 +6,8 @@ A simple, configuration-driven dotfiles manager that uses symlinks to keep your 
 
 This project provides a centralized way to manage configuration files for various applications (tmux, neovim, wezterm, etc.) by storing them in this repository and creating symlinks to their expected locations on your system.
 
+**Branch layout**: `main` holds only the automation logic (`Makefile`, `config.yaml`, `scripts/install.sh`) and is not meant to be installed directly. The actual dotfile content lives on OS-specific branches (`os/<name>`, e.g. `os/mac`, `os/ubuntu-24.04`), each of which merges `main` in to pick up automation updates. Check out the branch matching your OS before running `make install`.
+
 ## Features
 
 - **Configuration-driven**: Easy to add new configs by editing `config.yaml`
