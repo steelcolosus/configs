@@ -39,12 +39,18 @@ install_config() {
     if [ -e "$expanded_target" ] && [ ! -L "$expanded_target" ]; then
         backup_path="$BACKUP_DIR/$config_name-$(date +%Y%m%d-%H%M%S)"
         mkdir -p "$(dirname "$backup_path")"
-        mv "$expanded_target" "$backup_path"
+        if ! mv "$expanded_target" "$backup_path"; then
+            echo "✗ Failed to back up $expanded_target"
+            return 1
+        fi
         echo "Backed up existing file to $backup_path"
     fi
-    
+
     # Create symlink
-    ln -sfn "$full_source_path" "$expanded_target"
+    if ! ln -sfn "$full_source_path" "$expanded_target"; then
+        echo "✗ Failed to link $config_name -> $expanded_target"
+        return 1
+    fi
     echo "✓ Linked $config_name ($source_path) -> $expanded_target"
     
     # Run post-install commands
@@ -60,11 +66,17 @@ install_config() {
 # Main execution
 if [ -n "$1" ]; then
     # Install specific config
-    install_config "$1"
+    install_config "$1" || exit 1
 else
     # Install all configs
     echo "Installing all configurations..."
-    yq eval '.configs | keys | .[]' "$CONFIG_FILE" | while read -r config; do
-        install_config "$config"
-    done
+    failures=0
+    while read -r config; do
+        install_config "$config" || failures=$((failures + 1))
+    done < <(yq eval '.configs | keys | .[]' "$CONFIG_FILE")
+
+    if [ "$failures" -gt 0 ]; then
+        echo "✗ $failures configuration(s) failed to install"
+        exit 1
+    fi
 fi

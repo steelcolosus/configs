@@ -18,9 +18,9 @@ This project provides a centralized way to manage configuration files for variou
 ## Prerequisites
 
 - **macOS**: Homebrew (for automatic dependency installation)
-- **Linux**: Manual installation of `yq` required
+- **Linux**: `wget` or `curl` (for automatic dependency installation)
 
-The Makefile will automatically install `yq` via Homebrew on macOS if it's not present.
+The Makefile will automatically install `yq` if it's not present: via Homebrew on macOS, or by downloading the release binary for your architecture (amd64/arm64/arm) into `~/.local/bin` on Linux.
 
 ## Quick Start
 
@@ -83,6 +83,8 @@ post_install:
 - **target**: Where the symlink should be created on your system
 - **post_install**: Optional commands to run after installation
 
+> **Note**: `post_install` commands are executed directly via `eval`. Only add entries here that you trust, since they run as arbitrary shell commands.
+
 ## Available Commands
 
 | Command                 | Description                    |
@@ -92,6 +94,7 @@ post_install:
 | `make uninstall`        | Remove all symlinks            |
 | `make list`             | List available configurations  |
 | `make backup`           | Backup existing configurations |
+| `make restore-<config>` | Restore most recent backup for a configuration |
 | `make help`             | Show help message              |
 
 ## Examples
@@ -135,9 +138,12 @@ make install-nvim
 The system automatically backs up existing files before creating symlinks:
 
 ```bash
-# Backups are stored in ~/.config-backup with timestamps
+# Backups are stored in ~/.config-backup with timestamps, named after the config
 ls ~/.config-backup/
-# Output: .tmux.conf-20231201-143022
+# Output: tmux-20231201-143022
+
+# Restore a config from its most recent backup
+make restore-tmux
 ```
 
 ## Project Structure
@@ -145,12 +151,18 @@ ls ~/.config-backup/
 ```
 config-files/
 ├── README.md              # This file
-├── Makefile              # Main automation logic
-├── config.yaml           # Configuration mappings
-├── .tmux.conf            # Tmux configuration
-├── nvim/                 # Neovim configuration directory
+├── Makefile               # Main automation logic
+├── config.yaml            # Configuration mappings
+├── scripts/
+│   └── install.sh         # Installation logic used by the Makefile
+├── .tmux.conf              # Tmux configuration
+├── .wezterm.lua            # WezTerm configuration
+├── .zshrc                  # Zsh configuration
+├── nvim/                  # Neovim configuration directory
 │   ├── init.lua
 │   └── lua/
+├── ghostty/
+│   └── config             # Ghostty configuration
 └── .github/
     └── copilot-instructions.md
 ```
@@ -166,10 +178,7 @@ config-files/
 
 ### Dependencies
 
-If you get an error about `yq` not being found:
-
-**macOS**: The Makefile should install it automatically via Homebrew
-**Linux**: Install manually:
+If you get an error about `yq` not being found, the Makefile should install it automatically (via Homebrew on macOS, or by downloading a release binary into `~/.local/bin` on Linux). If that fails, install it manually:
 
 ```bash
 # Ubuntu/Debian
