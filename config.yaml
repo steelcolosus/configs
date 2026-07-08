@@ -21,15 +21,9 @@ configs:
     target: ~/.config/ghostty
 
   # Future configs (examples)
-  # zsh:
-  #   source: .zshrc
-  #   target: ~/.zshrc
   # git:
   #   source: .gitconfig
   #   target: ~/.gitconfig
-  # wezterm:
-  #   source: wezterm
-  #   target: ~/.config/wezterm
 
 # Optional post-install commands for specific configs
 post_install:
@@ -38,4 +32,4 @@ post_install:
   nvim:
     - "echo 'Neovim config updated. Restart nvim to apply changes.'"
   zsh:
-    - "source ~/.zshrc"
+    - "echo 'Zsh config updated. Restart your terminal or run \"exec zsh\" to apply changes.'"
