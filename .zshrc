@@ -203,3 +203,23 @@ fi
 
 # Added by Antigravity
 export PATH="/Users/eduardo/.antigravity/antigravity/bin:$PATH"
+
+# Added by Antigravity IDE
+export PATH="/Users/eduardo/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+
+
+aerospace-cleanup() {
+  # Grab all windows, find the ones with empty trailing titles, and close them
+  ghost_window_ids=$(aerospace list-windows --all | grep -e '.*|.*| $' | awk '{print $1}')
+  
+  if [ -z "$ghost_window_ids" ]; then
+    echo "No ghost windows found."
+  else
+    for id in $ghost_window_ids; do
+      echo "Purging ghost window ID: $id"
+      aerospace close --window-id "$id"
+    done
+  fi
+}
+
