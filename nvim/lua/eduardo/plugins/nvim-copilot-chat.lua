@@ -176,7 +176,7 @@ return {
             end
             select.git_diff = git_diff
 
-            opts.model = "gpt-5"
+            opts.model = "gpt-5.6-terra"
             opts.temperature = 0.1
 
             opts.selection = select.unnamed
