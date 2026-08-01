@@ -20,6 +20,10 @@ configs:
     source: ghostty
     target: ~/.config/ghostty
 
+  aerospace:
+    source: aerospace
+    target: ~/.config/aerospace
+
   # Future configs (examples)
   # git:
   #   source: .gitconfig
@@ -32,4 +36,7 @@ post_install:
   nvim:
     - "echo 'Neovim config updated. Restart nvim to apply changes.'"
   zsh:
-    - "echo 'Zsh config updated. Restart your terminal or run \"exec zsh\" to apply changes.'"
+    - 'echo ''Zsh config updated. Restart your terminal or run "exec zsh" to apply changes.'''
+  aerospace:
+    - "echo 'Aerospace config installed.'"
+    - "aerospace --version"
