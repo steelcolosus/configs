@@ -179,3 +179,6 @@ eval "$(zoxide init zsh)"
 alias cd="z"
 
 export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+
+# opencode
+export PATH=/home/eduardo/.opencode/bin:$PATH
