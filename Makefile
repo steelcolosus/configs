@@ -6,6 +6,10 @@ BACKUP_DIR := $(HOME)/.config-backup
 YQ_VERSION := v4.40.5
 LOCAL_BIN := $(HOME)/.local/bin
 
+# Prefer the repo-managed yq in ~/.local/bin so every recipe (and install.sh)
+# sees it regardless of the user's default PATH
+export PATH := $(LOCAL_BIN):$(PATH)
+
 .PHONY: all install uninstall list backup restore help install-yq
 
 # Default target: show help
@@ -47,7 +51,6 @@ install-yq:
 			fi; \
 			echo "yq installed to $(LOCAL_BIN)/yq"; \
 			echo "Please ensure $(LOCAL_BIN) is in your PATH."; \
-			export PATH="$(LOCAL_BIN):$$PATH"; \
 		else \
 			echo "Unsupported OS. Please install yq manually: https://github.com/mikefarah/yq#install"; \
 			exit 1; \

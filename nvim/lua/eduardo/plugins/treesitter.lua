@@ -1,26 +1,21 @@
 return {
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPre", "BufNewFile" },
+    -- `master` is the backward-compatible branch for Neovim 0.11.
+    -- The `main` rewrite requires Neovim 0.12+.
+    branch = "master",
+    lazy = false,
     build = ":TSUpdate",
     dependencies = {
-        "windwp/nvim-ts-autotag",
+        { "windwp/nvim-ts-autotag", opts = {} },
     },
     config = function()
-        -- import nvim-treesitter plugin
-        local treesitter = require("nvim-treesitter.configs")
+        local treesitter = require("nvim-treesitter")
 
-        -- configure treesitter
-        treesitter.setup({ -- enable syntax highlighting
+        treesitter.setup({
             highlight = {
                 enable = true,
             },
-            -- enable indentation
             indent = { enable = true },
-            -- enable autotagging (w/ nvim-ts-autotag plugin)
-            autotag = {
-                enable = true,
-            },
-            -- ensure these language parsers are installed
             ensure_installed = {
                 "json",
                 "javascript",
@@ -31,6 +26,7 @@ return {
                 "css",
                 "prisma",
                 "markdown",
+                "make",
                 "markdown_inline",
                 "svelte",
                 "graphql",
@@ -45,15 +41,6 @@ return {
                 "python",
                 "rst",
                 "toml",
-            },
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = "<C-Space>",
-                    node_incremental = "<C-Space>",
-                    scope_incremental = false,
-                    node_decremental = "<bs>",
-                },
             },
         })
     end,

@@ -34,5 +34,11 @@ opt.splitbelow = true
 -- folding
 opt.foldlevel = 99
 opt.foldmethod = "expr"
-opt.foldexpr = "nvim_treesitter#foldexpr()"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.completeopt = { "menu", "menuone", "noinsert", "popup" }
+
+-- Or a simple autocommand if you prefer:
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = { "*.conf", "config" },
+    command = "set filetype=sh",
+})
