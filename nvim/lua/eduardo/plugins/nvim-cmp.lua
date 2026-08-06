@@ -22,12 +22,6 @@ return {
 
         local lspkind = require("lspkind")
 
-        lspkind.init({
-            symbol_map = {
-                Copilot = "",
-            },
-        })
-
         -- loads vscode style snippets from installed plugins (e.g. friendly-snippets)
         require("luasnip.loaders.from_vscode").lazy_load()
 
