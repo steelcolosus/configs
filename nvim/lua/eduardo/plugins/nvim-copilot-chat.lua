@@ -197,6 +197,22 @@ return {
 
             chat.setup(opts)
 
+            -- CopilotChat fetches the model list from the Copilot API on every
+            -- cold cache (~7s). That stalls chat completion (#, @, $, /) after
+            -- Tab until the fetch finishes, so it looks like Tab "does nothing".
+            -- Warm the cache in the background at startup and keep it fresh
+            -- (cache TTL is 5 min) so completion is instant.
+            local function warm_models_cache()
+                local async = require("plenary.async")
+                async.run(function()
+                    pcall(function()
+                        require("CopilotChat.client"):models()
+                    end)
+                end)
+            end
+            vim.defer_fn(warm_models_cache, 2000)
+            vim.fn.timer_start(240000, warm_models_cache, { ["repeat"] = -1 })
+
             vim.api.nvim_create_user_command("CopilotChatVisual", function(args)
                 chat.ask(args.args, { selection = select.visual })
             end, { nargs = "*", range = true })
@@ -241,6 +257,38 @@ return {
                     if ft == "copilot-chat" then
                         vim.bo.filetype = "markdown"
                         -- vim.bo.syntax = "markdown"
+
+                        -- Enable Copilot ghost-text suggestions for the chat input
+                        -- (attached only to copilot-chat buffers via copilot's
+                        -- should_attach config) so typing a prompt gets inline
+                        -- paragraph completion, not just a popup.
+                        vim.b.copilot_suggestion_auto_trigger = true
+
+                        -- Tab should accept the inline (ghost text) suggestion
+                        -- first, then the native completion popup (CopilotChat's
+                        -- #, @, /, $), then nvim-cmp's floating menu (plain text
+                        -- word completion), and finally fall back to
+                        -- CopilotChat's structured completion.
+                        vim.keymap.set("i", "<Tab>", function()
+                            local ok0, sug = pcall(require, "copilot.suggestion")
+                            if ok0 and sug.is_visible() then
+                                sug.accept()
+                                return
+                            end
+                            if vim.fn.pumvisible() == 1 then
+                                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-y>", true, false, true), "n", false)
+                                return
+                            end
+                            local ok, cmp = pcall(require, "cmp")
+                            if ok and cmp.visible() then
+                                cmp.confirm({ select = true })
+                                return
+                            end
+                            local ok2, completion = pcall(require, "CopilotChat.completion")
+                            if ok2 then
+                                completion.complete()
+                            end
+                        end, { buffer = 0 })
                     end
                 end,
             })
