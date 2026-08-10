@@ -25,7 +25,7 @@ palette = 12=#7aa2f7
 palette = 13=#bb9af7
 palette = 14=#7dcfff
 palette = 15=#c0caf5
-font-size = 14
+font-size = 12
 font-thicken = true
 auto-update = check
 auto-update-channel = stable
