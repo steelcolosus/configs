@@ -24,6 +24,9 @@ configs:
     source: aerospace
     target: ~/.config/aerospace
 
+  warp:
+    source: .warp
+    target: ~/.warp
   # Future configs (examples)
   # git:
   #   source: .gitconfig
