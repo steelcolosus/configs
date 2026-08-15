@@ -6,7 +6,7 @@ return {
     config = function()
         require("copilot").setup({
             suggestion = {
-                enabled = true,
+                enabled = false, -- Disable inline suggestions
                 auto_trigger = false,
                 hide_during_completion = true,
                 keymap = {
@@ -23,7 +23,7 @@ return {
                 log_lsp_messages = true,
             },
             filetypes = {
-                markdown = true,
+                markdown = false,
                 help = true,
             },
             -- Only attach ghost-text suggestions to the CopilotChat input buffer.

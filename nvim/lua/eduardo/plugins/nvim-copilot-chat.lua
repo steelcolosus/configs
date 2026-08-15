@@ -276,7 +276,11 @@ return {
                                 return
                             end
                             if vim.fn.pumvisible() == 1 then
-                                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-y>", true, false, true), "n", false)
+                                vim.api.nvim_feedkeys(
+                                    vim.api.nvim_replace_termcodes("<C-y>", true, false, true),
+                                    "n",
+                                    false
+                                )
                                 return
                             end
                             local ok, cmp = pcall(require, "cmp")
