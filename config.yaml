@@ -20,6 +20,9 @@ configs:
     source: ghostty
     target: ~/.config/ghostty
 
+  warp:
+    source: warp-terminal
+    target: ~/.local/share/warp-terminal
   # Future configs (examples)
   # git:
   #   source: .gitconfig
@@ -32,4 +35,4 @@ post_install:
   nvim:
     - "echo 'Neovim config updated. Restart nvim to apply changes.'"
   zsh:
-    - "echo 'Zsh config updated. Restart your terminal or run \"exec zsh\" to apply changes.'"
+    - 'echo ''Zsh config updated. Restart your terminal or run "exec zsh" to apply changes.'''
