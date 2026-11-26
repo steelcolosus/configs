@@ -20,18 +20,18 @@ return {
             panel = { enabled = false },
             logger = {
                 file_log_level = vim.log.levels.TRACE,
-                log_lsp_messages = true,
+                log_lsp_messages = false,
             },
             filetypes = {
                 markdown = false,
                 help = true,
             },
-            -- Only attach ghost-text suggestions to the CopilotChat input buffer.
+            --[[ -- Only attach ghost-text suggestions to the CopilotChat input buffer.
             -- Normal code editing keeps using nvim-cmp for completion.
             should_attach = function(bufnr)
                 return vim.endswith(vim.api.nvim_buf_get_name(bufnr), "/copilot-chat")
                     or vim.endswith(vim.api.nvim_buf_get_name(bufnr), "copilot-chat")
-            end,
+            end, ]]
         })
     end,
 }

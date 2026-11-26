@@ -107,7 +107,7 @@ return {
             ------------------------------------------------------------------
             -- 2) helper to (re)build the repo-specific system prompt
             ------------------------------------------------------------------
-            local function current_repo_prompt()
+            --[[ local function current_repo_prompt()
                 -- find the markdown file in the present working tree
                 local md = vim.fn.getcwd() .. "/.github/copilot-instructions.md"
                 local base = require("CopilotChat.config.prompts").COPILOT_BASE.system_prompt -- official base
@@ -118,19 +118,19 @@ return {
                 end
                 -- vim.notify("No copilot instructions found at: " .. md, vim.log.levels.WARN)
                 return base
-            end
+            end ]]
 
             ------------------------------------------------------------------
             -- 3) first load: register the prompt and use it project-wide
             ------------------------------------------------------------------
-            opts.prompts = opts.prompts or {}
+            --[[ opts.prompts = opts.prompts or {}
             opts.prompts.REPO_BASE = { system_prompt = current_repo_prompt() }
-            opts.system_prompt = "REPO_BASE" -- make it the default
+            opts.system_prompt = "REPO_BASE" -- make it the default ]]
 
             ------------------------------------------------------------------
             -- 4) hot-reload when the file is saved
             ------------------------------------------------------------------
-            vim.api.nvim_create_autocmd("BufWritePost", {
+            --[[ vim.api.nvim_create_autocmd("BufWritePost", {
                 pattern = ".github/copilot-instructions.md",
                 callback = function(_)
                     -- recompute + merge without clobbering other fields
@@ -142,7 +142,7 @@ return {
                     })
                     -- require("CopilotChat").reset() -- clear buffer / history
                 end,
-            })
+            }) ]]
 
             ------------------------------------------------------------------
             -- 5) Mappings
@@ -182,7 +182,7 @@ return {
             opts.selection = select.unnamed
 
             -- Override the git prompts message
-            opts.prompts.Commit = {
+            --[[ opts.prompts.Commit = {
                 prompt = "Write commit message for the change with commitizen convention",
                 selection = function(source)
                     return select.git_diff(source, false, buffer)
@@ -193,7 +193,7 @@ return {
                 selection = function(source)
                     return select.git_diff(source, true, buffer)
                 end,
-            }
+            } ]]
 
             chat.setup(opts)
 
@@ -202,7 +202,7 @@ return {
             -- Tab until the fetch finishes, so it looks like Tab "does nothing".
             -- Warm the cache in the background at startup and keep it fresh
             -- (cache TTL is 5 min) so completion is instant.
-            local function warm_models_cache()
+            --[[ local function warm_models_cache()
                 local async = require("plenary.async")
                 async.run(function()
                     pcall(function()
@@ -211,7 +211,7 @@ return {
                 end)
             end
             vim.defer_fn(warm_models_cache, 2000)
-            vim.fn.timer_start(240000, warm_models_cache, { ["repeat"] = -1 })
+            vim.fn.timer_start(240000, warm_models_cache, { ["repeat"] = -1 }) ]]
 
             vim.api.nvim_create_user_command("CopilotChatVisual", function(args)
                 chat.ask(args.args, { selection = select.visual })
@@ -232,21 +232,21 @@ return {
             end, { nargs = "*", range = true })
 
             -- Custom buffer for CopilotChat
-            vim.api.nvim_create_user_command("CopilotChatInstructions", function()
+            --[[ vim.api.nvim_create_user_command("CopilotChatInstructions", function()
                 local copilot_chat = require("CopilotChat")
                 local current_prompt = copilot_chat.prompts
                         and copilot_chat.prompts.REPO_BASE
                         and copilot_chat.prompts.REPO_BASE.system_prompt
                     or "No custom instructions loaded"
                 vim.api.nvim_echo({ { current_prompt, "Normal" } }, true, {})
-            end, {})
+            end, {}) ]]
             -- Restore CopilotChatBuffer
             vim.api.nvim_create_user_command("CopilotChatBuffer", function(args)
                 chat.ask(args.args, { selection = select.buffer })
             end, { nargs = "*", range = true })
 
             -- Custom buffer for CopilotChat
-            vim.api.nvim_create_autocmd("BufEnter", {
+            --[[ vim.api.nvim_create_autocmd("BufEnter", {
                 pattern = "copilot-*",
                 callback = function()
                     vim.opt_local.relativenumber = true
@@ -295,7 +295,7 @@ return {
                         end, { buffer = 0 })
                     end
                 end,
-            })
+            }) ]]
         end,
         event = "VeryLazy",
         keys = {

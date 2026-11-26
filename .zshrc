@@ -223,3 +223,10 @@ aerospace-cleanup() {
   fi
 }
 
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# Ghidra for REA (rea-agents): REA requires a 12.1.x release with mac_arm_64 natives
+export GHIDRA_INSTALL_DIR="$HOME/opt/ghidra_12.1.4_PUBLIC"
+# Working arm64 JDK: all /Library/Java JDKs are x86_64 and cannot run on this Mac
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+export PATH="$JAVA_HOME/bin:$PATH"
